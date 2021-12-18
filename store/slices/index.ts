@@ -1,9 +1,9 @@
-import {combineReducers} from "redux";
+import { combineReducers } from 'redux';
 
-import sidebar from "./sidebar";
+import sidebar from './sidebar';
 
 const rootReducer = combineReducers({
-    sidebar:sidebar
-})
+  sidebar: sidebar
+});
 
 export default rootReducer;

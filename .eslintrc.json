@@ -1,3 +1,39 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["prettier", "@typescript-eslint"],
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@/src", "./src"]],
+        "extensions": [".ts"]
+      }
+    }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "import/no-unresolved": "off",
+    "import/named": "warn",
+    "import/namespace": "warn",
+    "import/no-named-as-default": "off",
+    "import/export": "warn",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "prettier/prettier": "error"
+  }
 }
