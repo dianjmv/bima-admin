@@ -1,4 +1,4 @@
-import LoginLayout from '../LoginLayout';
+import LoginLayout from '../../layouts/LoginLayout';
 import { useState } from 'react';
 import { useLoginUserMutation } from '../../services/bima';
 import { useDispatch } from 'react-redux';

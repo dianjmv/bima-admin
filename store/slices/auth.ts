@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { json } from 'stream/consumers';
+import { isEmpty } from 'lodash';
+import {
+  getLocalAuthToken,
+  removeLocalAuthToken,
+  setLocalAuthToken
+} from '../../utils/Utils';
 
 export const initialState = {
   access_token: '',
-  token_type: ''
+  token_type: '',
+  userInfo: null
 };
 
 const auth = createSlice({
@@ -17,19 +23,31 @@ const auth = createSlice({
     logout: (state) => {
       state.access_token = '';
       state.token_type = '';
+    },
+    setUserInfo: (state, { payload }) => {
+      state.userInfo = payload;
     }
   }
 });
 
 export const authMiddleware = (store) => (next) => (action) => {
+  const authLocalCredentials = getLocalAuthToken();
+  const authStoreCredentials = store.getState();
+  if (
+    !isEmpty(authLocalCredentials) &&
+    authStoreCredentials.auth.access_token === ''
+  ) {
+    next(setAuthAccess(authLocalCredentials));
+  }
   if (auth.actions.setAuthAccess.match(action)) {
-    localStorage.setItem('bima_security', JSON.stringify(action.payload));
+    setLocalAuthToken(action.payload);
   } else if (auth.actions.logout.match(action)) {
-    localStorage.removeItem('bima_security');
+    removeLocalAuthToken();
   }
   return next(action);
 };
-export const { setAuthAccess } = auth.actions;
+export const { setAuthAccess, logout, setUserInfo } = auth.actions;
 export const authAccessSelector = (state) => state.auth;
+export const authUserInfoSelector = (state) => state.auth.userInfo;
 
 export default auth.reducer;
