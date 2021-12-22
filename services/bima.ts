@@ -52,7 +52,6 @@ export const bimaApi = createApi({
       query: () => ({
         url: 'security/me'
       }),
-      providesTags: [{ type: 'User', id: 'LIST' }],
       transformResponse: (response: any) => {
         return {
           id: response.id,

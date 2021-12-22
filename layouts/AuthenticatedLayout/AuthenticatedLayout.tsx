@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSetUserQuery } from '../../services/bima';
 import { useDispatch } from 'react-redux';
-import {logout, setUserInfo} from '../../store/slices/auth';
+import { logout, setUserInfo } from '../../store/slices/auth';
+import { getLocalAuthToken } from '../../utils/Utils';
 
 export default function AuthenticatedLayout({ children }) {
   const { data, isError, isLoading } = useSetUserQuery();
@@ -17,7 +18,7 @@ export default function AuthenticatedLayout({ children }) {
   }, [isError, data, isLoading]);
   const router = useRouter();
   useEffect(() => {
-    const authLocal = localStorage.getItem('bima_security');
+    const authLocal = getLocalAuthToken();
     if (!authLocal) router.push('/auth/login');
   }, []);
   return (

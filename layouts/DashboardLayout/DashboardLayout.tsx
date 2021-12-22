@@ -11,7 +11,8 @@ import { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSidebarStatus, sidebarSelector } from '../../store/slices/sidebar';
 import AuthenticatedLayout from '../AuthenticatedLayout';
-import { authUserInfoSelector } from '../../store/slices/auth';
+import { authUserInfoSelector, logout } from '../../store/slices/auth';
+import { useRouter } from 'next/router';
 
 function classNames(...classes: Array<string>) {
   return classes.filter(Boolean).join(' ');
@@ -20,9 +21,14 @@ function classNames(...classes: Array<string>) {
 export default function DashboardLayout({ children }) {
   const { sidebarIsOpen } = useSelector(sidebarSelector);
   const userInfo = useSelector(authUserInfoSelector);
+  const router = useRouter();
   const dispatch = useDispatch();
   const setSidebarOpen = (state: boolean) => {
     dispatch(setSidebarStatus(state));
+  };
+  const logoutUser = async () => {
+    dispatch(logout());
+    await router.push('/auth/login');
   };
   return (
     <AuthenticatedLayout>
@@ -128,15 +134,15 @@ export default function DashboardLayout({ children }) {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <button
+                            onClick={logoutUser}
                             className={classNames(
                               active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              'block px-4 py-2 text-sm text-gray-700 w-full text-left'
                             )}
                           >
                             Logout
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>

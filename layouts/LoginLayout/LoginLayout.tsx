@@ -8,7 +8,7 @@ function LoginLayout({ children }) {
     if (authLocal) router.push('/');
   }, []);
   return (
-    <div className="min-h-full flex">
+    <div className="min-h-full flex h-screen">
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
@@ -37,7 +37,6 @@ function LoginLayout({ children }) {
                 <p className="text-sm font-medium text-gray-700">
                   Sign in with
                 </p>
-
                 <div className="mt-1 grid grid-cols-3 gap-3">
                   <div>
                     <a
