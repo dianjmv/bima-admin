@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import DashboardLayout from '../../../layouts/DashboardLayout';
+import UserCreation from '../../../components/UserCreation';
 
 export default function CreateUserPage() {
   return (
@@ -14,8 +15,8 @@ export default function CreateUserPage() {
         <div className="sm:block">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col mt-2">
-              <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
-
+              <div className="align-middle min-w-full overflow-x-auto overflow-hidden sm:rounded-lg">
+                <UserCreation />
               </div>
             </div>
           </div>

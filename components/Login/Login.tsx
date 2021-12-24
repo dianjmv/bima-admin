@@ -40,7 +40,9 @@ const Login = () => {
     if (!isError && data?.access_token) {
       setLocalAuthToken(data);
       dispatch(setAuthAccess(data));
-      router.push('/');
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     }
   }, [data, isError, isLoading]);
 
