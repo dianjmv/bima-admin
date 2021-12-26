@@ -2,13 +2,13 @@ import { useGetUsersQuery } from '../../services/bima';
 import { useEffect } from 'react';
 
 export default function UsersList() {
-  const { data, isLoading, isError, error } = useGetUsersQuery();
+  const { data, isLoading, isError, error, isFetching } = useGetUsersQuery();
 
   useEffect(() => {
     if (isError) {
       console.error(error);
     }
-  }, [isLoading, isError, data]);
+  }, [isLoading, isError, data, isFetching]);
   return (
     <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
       {!isLoading && data ? (

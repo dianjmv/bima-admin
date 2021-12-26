@@ -3,6 +3,7 @@ import { LoginType } from '../types/LoginType';
 import { CredentialsType } from '../types/CredentialsType';
 import { UserType } from '../types/UserType';
 import { getLocalAuthToken } from '../utils/Utils';
+import { snakeCase } from 'lodash';
 
 export const bimaApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -16,7 +17,7 @@ export const bimaApi = createApi({
       return headers;
     }
   }),
-  tagTypes: ['User'],
+  tagTypes: ['Users'],
   endpoints: (builder) => ({
     loginUser: builder.mutation<CredentialsType, LoginType>({
       query: (userLogin) => {
@@ -33,7 +34,7 @@ export const bimaApi = createApi({
       query: () => ({
         url: 'users'
       }),
-      providesTags: [{ type: 'User', id: 'LIST' }],
+      providesTags: [{ type: 'Users', id: 'LIST' }],
       transformResponse: (response: any) => {
         return response?.items?.flatMap((user) => ({
           id: user.id,
@@ -65,8 +66,27 @@ export const bimaApi = createApi({
           username: response.username
         };
       }
+    }),
+    createUser: builder.mutation<any, UserType>({
+      query: (userLogin) => {
+        const newUser = Object.fromEntries(
+          Object.entries(userLogin).map((element) => [
+            snakeCase(element[0]),
+            element[1]
+          ])
+        );
+        return {
+          url: 'users',
+          method: 'POST',
+          body: newUser
+        };
+      }
     })
   })
 });
-export const { useLoginUserMutation, useGetUsersQuery, useSetUserQuery } =
-  bimaApi;
+export const {
+  useLoginUserMutation,
+  useGetUsersQuery,
+  useSetUserQuery,
+  useCreateUserMutation
+} = bimaApi;
