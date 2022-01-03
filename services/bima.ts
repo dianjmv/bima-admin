@@ -6,6 +6,7 @@ import { getLocalAuthToken } from '../utils/Utils';
 import { snakeCase } from 'lodash';
 
 export const bimaApi = createApi({
+  refetchOnMountOrArgChange: 30,
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8000/',
     prepareHeaders: (headers) => {

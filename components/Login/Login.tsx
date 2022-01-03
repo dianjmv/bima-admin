@@ -10,6 +10,7 @@ import { setLocalAuthToken } from '../../utils/Utils';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import LoginForm from '../LoginForm';
+import { toaster } from 'evergreen-ui';
 
 const Login = () => {
   const [login, { data, isError, isLoading }] = useLoginUserMutation();
@@ -40,9 +41,10 @@ const Login = () => {
     if (!isError && data?.access_token) {
       setLocalAuthToken(data);
       dispatch(setAuthAccess(data));
-      setTimeout(() => {
-        router.push('/');
-      }, 1000);
+      router.push('/');
+    }
+    if (isError) {
+      toaster.danger('User or password is invalid');
     }
   }, [data, isError, isLoading]);
 
