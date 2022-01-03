@@ -6,17 +6,21 @@ import { logout, setUserInfo } from '../../store/slices/auth';
 import { getLocalAuthToken } from '../../utils/Utils';
 
 export default function AuthenticatedLayout({ children }) {
-  const { data, isError, isLoading } = useSetUserQuery();
+  const { data, isError, isLoading, error, refetch } = useSetUserQuery();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (isError) {
-      dispatch(logout());
-    }
+    refetch();
+  }, []);
+  useEffect(() => {
     if (data) {
       dispatch(setUserInfo(data));
     }
+    if (error) {
+      dispatch(logout());
+    }
   }, [isError, data, isLoading]);
   const router = useRouter();
+  console.log(error);
   useEffect(() => {
     const authLocal = getLocalAuthToken();
     if (!authLocal) router.push('/auth/login');
