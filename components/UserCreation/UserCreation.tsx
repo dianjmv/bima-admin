@@ -2,7 +2,10 @@ import { Button } from 'evergreen-ui';
 
 export default function UserCreation({ formik }: any) {
   return (
-    <form className="grid sm:grid-cols-2 grid-cols-1 py-4 gap-y-10 gap-x-16" onSubmit={formik.handleSubmit}>
+    <form
+      className="grid sm:grid-cols-2 grid-cols-1 py-4 gap-y-10 gap-x-16"
+      onSubmit={formik.handleSubmit}
+    >
       <div className="grid grid-cols-1">
         <div className="block space-y-1">
           <input
@@ -124,7 +127,7 @@ export default function UserCreation({ formik }: any) {
             type="text"
             id={'phone'}
             name="phone"
-            placeholder="Repeat Password..."
+            placeholder="Phone Number..."
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.phone}
@@ -143,7 +146,7 @@ export default function UserCreation({ formik }: any) {
             type="text"
             id={'avatar'}
             name="avatar"
-            placeholder="Repeat Password..."
+            placeholder="Avatar Url"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.avatar}
