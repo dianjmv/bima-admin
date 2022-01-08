@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LoginType } from '../types/LoginType';
 import { CredentialsType } from '../types/CredentialsType';
-import { UserType } from '../types/UserType';
+import { UsersPaginated, UserType } from '../types/UserType';
 import { getLocalAuthToken } from '../utils/Utils';
 import { snakeCase } from 'lodash';
 
@@ -31,13 +31,14 @@ export const bimaApi = createApi({
         };
       }
     }),
-    getUsers: builder.query<UserType[], void>({
-      query: () => ({
-        url: 'users'
-      }),
+    getUsers: builder.query<UsersPaginated, { page?: number; size?: number }>({
+      query: (args) => {
+        const { page, size } = args;
+        return { url: `users/?page=${page}&size=${size}` };
+      },
       providesTags: [{ type: 'Users', id: 'LIST' }],
       transformResponse: (response: any) => {
-        return response?.items?.flatMap((user) => ({
+        const userInformationParsed = response?.items?.flatMap((user) => ({
           id: user.id,
           firstName: user.first_name,
           lastName: user.last_name,
@@ -48,6 +49,12 @@ export const bimaApi = createApi({
           phone: user.phone,
           username: user.username
         }));
+        return {
+          items: userInformationParsed,
+          total: response.total,
+          page: response.page,
+          size: response.size
+        };
       }
     }),
     setUser: builder.query<UserType, void>({

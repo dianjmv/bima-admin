@@ -1,3 +1,5 @@
+import { IPaginatedObject } from './PaginatedObject';
+
 export interface UserType {
   id?: string;
   firstName?: string;
@@ -11,4 +13,8 @@ export interface UserType {
   password?: string;
   avatar?: string;
   birthDate?: string;
+}
+
+export interface UsersPaginated extends IPaginatedObject {
+  items: Array<UserType>;
 }

@@ -4,7 +4,6 @@ import { useLoginUserMutation } from '../../services/bima';
 import { useDispatch } from 'react-redux';
 import { setAuthAccess } from '../../store/slices/auth';
 import { useRouter } from 'next/router';
-import classNames from 'classnames/bind';
 import Head from 'next/head';
 import { setLocalAuthToken } from '../../utils/Utils';
 import * as Yup from 'yup';
