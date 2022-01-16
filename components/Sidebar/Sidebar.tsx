@@ -18,6 +18,7 @@ import {
   useSetSidebarStatus,
   useSidebarSelector
 } from '../../store/sidebar/sidebarHooks';
+import { words } from 'lodash';
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon, current: false },
@@ -40,13 +41,20 @@ interface SidebarProps {
   sidebarStatus: boolean;
 }
 
+function isHomePath(path: string, navHref: string): boolean {
+  return path === '/' && navHref === '/';
+}
+
 export default function Sidebar(props: SidebarProps) {
   const [listNavigation, setListNavigation] = useState(navigation);
   const setSidebarOpen = useSetSidebarStatus();
   const router = useRouter();
+  console.log(router);
   useEffect(() => {
     const newNav = listNavigation.map((nav) => {
-      if (nav.href === router.asPath) {
+      const paths = words(router.pathname);
+      console.log(paths);
+      if (nav.href === `/${paths[0]}` || isHomePath(router.pathname, nav.href)) {
         return { ...nav, current: true };
       } else {
         return { ...nav, current: false };

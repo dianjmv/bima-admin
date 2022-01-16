@@ -1,7 +1,11 @@
 import { useGetUsersQuery } from '../../services/bima';
 import { useEffect, useState } from 'react';
 import DataGrid from '../DataGrid';
-import {User} from "@supabase/gotrue-js";
+import {useRouter} from "next/router";
+import {UserType} from "../../types/UserType";
+
+
+
 
 const columns = [
   {
@@ -27,6 +31,7 @@ const columns = [
 ];
 
 export default function UsersList() {
+  const router = useRouter();
   const [actualPage, setActualPage] = useState(1);
   const { data, isLoading, isError, error, isFetching, refetch } =
     useGetUsersQuery({
@@ -47,11 +52,12 @@ export default function UsersList() {
     setActualPage(actualPage - 1);
     refetch();
   }
-  function deleteUser(user: User) {
+  function deleteUser(user: UserType) {
     console.log(user);
   }
-  function editUser(user: User) {
+  async function editUser(user: UserType) {
     console.log(user);
+    await router.push(`/users/${user.id}`);
   }
   return (
     <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg h-full">
