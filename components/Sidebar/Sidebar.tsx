@@ -42,6 +42,7 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   const [listNavigation, setListNavigation] = useState(navigation);
+  const setSidebarOpen = useSetSidebarStatus();
   const router = useRouter();
   useEffect(() => {
     const newNav = listNavigation.map((nav) => {
@@ -54,18 +55,14 @@ export default function Sidebar(props: SidebarProps) {
     setListNavigation(newNav);
   }, [router.asPath]);
 
-  const sidebarIsOpen = useSidebarSelector();
-  const setSidebarOpen = () => {
-    useSetSidebarStatus();
-  };
-  if (!sidebarIsOpen) return null;
+  const { sidebarIsOpen } = useSidebarSelector();
   return (
     <Fragment>
-      <Transition.Root show={sidebarIsOpen?.sidebarIsOpen} as={Fragment}>
+      <Transition.Root show={sidebarIsOpen} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 flex z-40 lg:hidden"
-          onClose={() => setSidebarOpen()}
+          onClose={setSidebarOpen}
         >
           <Transition.Child
             as={Fragment}
@@ -101,7 +98,7 @@ export default function Sidebar(props: SidebarProps) {
                   <button
                     type="button"
                     className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                    onClick={() => setSidebarOpen()}
+                    onClick={setSidebarOpen}
                   >
                     <span className="sr-only">Close sidebar</span>
                     <XIcon className="h-6 w-6 text-white" aria-hidden="true" />

@@ -23,8 +23,8 @@ export const authMiddleware = (store) => (next) => (action) => {
   const authLocalCredentials = getLocalAuthToken();
   const authStoreCredentials = store.getState();
   if (
-    !isEmpty(authLocalCredentials.auth) &&
-    authStoreCredentials.rootReducer.auth.access_token === ''
+    !isEmpty(authLocalCredentials?.auth) &&
+    authStoreCredentials?.rootReducer?.auth?.access_token === ''
   ) {
     next(setAuthAccess(authLocalCredentials));
   }

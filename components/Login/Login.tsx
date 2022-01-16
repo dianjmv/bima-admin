@@ -1,8 +1,7 @@
 import LoginLayout from '../../layouts/LoginLayout';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLoginUserMutation } from '../../services/bima';
-import { useDispatch } from 'react-redux';
-import { setAuthAccess } from '../../store/slices/auth';
+
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { setLocalAuthToken } from '../../utils/Utils';
@@ -10,11 +9,12 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import LoginForm from '../LoginForm';
 import { toaster } from 'evergreen-ui';
+import { useSetAuthAccess } from '../../store/auth/authHooks';
 
 const Login = () => {
   const [login, { data, isError, isLoading }] = useLoginUserMutation();
-  const dispatch = useDispatch();
   const router = useRouter();
+  const setAuthAccess = useSetAuthAccess();
 
   const validationForm = Yup.object({
     username: Yup.string().required('Please enter your username'),
@@ -39,7 +39,7 @@ const Login = () => {
   useEffect(() => {
     if (!isError && data?.access_token) {
       setLocalAuthToken(data);
-      dispatch(setAuthAccess(data));
+      setAuthAccess(data);
       router.push('/');
     }
     if (isError) {

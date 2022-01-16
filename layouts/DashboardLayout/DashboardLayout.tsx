@@ -21,7 +21,7 @@ function classNames(...classes: Array<string>) {
 }
 
 export default function DashboardLayout({ children }) {
-  const sidebarIsOpen = useSidebarSelector();
+  const { sidebarIsOpen } = useSidebarSelector();
   const userSelector = useAuthSelector();
   const setSidebarStatus = useSetSidebarStatus();
   const logout = useLogout();
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }) {
   return (
     <AuthenticatedLayout>
       <div className="min-h-full">
-        <Sidebar sidebarStatus={sidebarIsOpen?.sidebarIsOpen} />
+        <Sidebar sidebarStatus={sidebarIsOpen} />
         <div className="lg:pl-64 flex flex-col flex-1">
           <div className="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none">
             <button
