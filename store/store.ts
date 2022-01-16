@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { bimaApi } from '../services/bima';
-import sidebar from './slices/sidebar';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import auth, { authMiddleware } from './slices/auth';
+
+import rootReducer from './root/rootReducer';
+import { authMiddleware } from './auth/authSlice';
 
 export const store = configureStore({
   reducer: {
-    sidebar: sidebar,
-    [bimaApi.reducerPath]: bimaApi.reducer,
-    auth: auth
+    rootReducer,
+    [bimaApi.reducerPath]: bimaApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(bimaApi.middleware).concat(authMiddleware)

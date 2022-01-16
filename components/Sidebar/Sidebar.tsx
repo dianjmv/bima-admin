@@ -12,10 +12,12 @@ import {
   XIcon
 } from '@heroicons/react/outline';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { setSidebarStatus, sidebarSelector } from '../../store/slices/sidebar';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import {
+  useSetSidebarStatus,
+  useSidebarSelector
+} from '../../store/sidebar/sidebarHooks';
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon, current: false },
@@ -52,18 +54,18 @@ export default function Sidebar(props: SidebarProps) {
     setListNavigation(newNav);
   }, [router.asPath]);
 
-  const { sidebarIsOpen } = useSelector(sidebarSelector);
-  const dispatch = useDispatch();
-  const setSidebarOpen = (state: boolean) => {
-    dispatch(setSidebarStatus(state));
+  const sidebarIsOpen = useSidebarSelector();
+  const setSidebarOpen = () => {
+    useSetSidebarStatus();
   };
+  if (!sidebarIsOpen) return null;
   return (
     <Fragment>
-      <Transition.Root show={sidebarIsOpen} as={Fragment}>
+      <Transition.Root show={sidebarIsOpen?.sidebarIsOpen} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 flex z-40 lg:hidden"
-          onClose={() => setSidebarOpen(false)}
+          onClose={() => setSidebarOpen()}
         >
           <Transition.Child
             as={Fragment}
@@ -99,7 +101,7 @@ export default function Sidebar(props: SidebarProps) {
                   <button
                     type="button"
                     className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => setSidebarOpen()}
                   >
                     <span className="sr-only">Close sidebar</span>
                     <XIcon className="h-6 w-6 text-white" aria-hidden="true" />

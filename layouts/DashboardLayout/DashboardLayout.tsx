@@ -8,38 +8,41 @@ import {
 } from '@heroicons/react/solid';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSidebarStatus, sidebarSelector } from '../../store/slices/sidebar';
 import AuthenticatedLayout from '../AuthenticatedLayout';
-import { authUserInfoSelector, logout } from '../../store/slices/auth';
 import { useRouter } from 'next/router';
+import {
+  useSetSidebarStatus,
+  useSidebarSelector
+} from '../../store/sidebar/sidebarHooks';
+import { useAuthSelector, useLogout } from '../../store/auth/authHooks';
 
 function classNames(...classes: Array<string>) {
   return classes.filter(Boolean).join(' ');
 }
 
 export default function DashboardLayout({ children }) {
-  const { sidebarIsOpen } = useSelector(sidebarSelector);
-  const userInfo = useSelector(authUserInfoSelector);
+  const sidebarIsOpen = useSidebarSelector();
+  const userSelector = useAuthSelector();
+  const setSidebarStatus = useSetSidebarStatus();
+  const logout = useLogout();
   const router = useRouter();
-  const dispatch = useDispatch();
-  const setSidebarOpen = (state: boolean) => {
-    dispatch(setSidebarStatus(state));
+  const setSidebarOpen = () => {
+    setSidebarStatus();
   };
   const logoutUser = async () => {
-    dispatch(logout());
+    logout();
     await router.push('/auth/login');
   };
   return (
     <AuthenticatedLayout>
       <div className="min-h-full">
-        <Sidebar sidebarStatus={sidebarIsOpen} />
+        <Sidebar sidebarStatus={sidebarIsOpen?.sidebarIsOpen} />
         <div className="lg:pl-64 flex flex-col flex-1">
           <div className="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none">
             <button
               type="button"
               className="px-4 border-r border-gray-200 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500 lg:hidden"
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => setSidebarOpen()}
             >
               <span className="sr-only">Open sidebar</span>
               <MenuAlt1Icon className="h-6 w-6" aria-hidden="true" />
@@ -88,7 +91,8 @@ export default function DashboardLayout({ children }) {
                       />
                       <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
                         <span className="sr-only">Open user menu for </span>
-                        {userInfo?.firstName} {userInfo?.lastName}
+                        {userSelector?.userInfo?.firstName}{' '}
+                        {userSelector?.userInfo?.lastName}
                       </span>
                       <ChevronDownIcon
                         className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block"
@@ -172,8 +176,8 @@ export default function DashboardLayout({ children }) {
                             alt=""
                           />
                           <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
-                            Good morning,{userInfo?.firstName}{' '}
-                            {userInfo?.lastName}
+                            Good morning,{userSelector?.userInfo?.firstName}{' '}
+                            {userSelector?.userInfo?.lastName}
                           </h1>
                         </div>
                         <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">

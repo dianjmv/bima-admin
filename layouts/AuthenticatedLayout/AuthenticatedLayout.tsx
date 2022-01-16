@@ -1,26 +1,21 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSetUserQuery } from '../../services/bima';
-import { useDispatch } from 'react-redux';
-import { logout, setUserInfo } from '../../store/slices/auth';
 import { getLocalAuthToken } from '../../utils/Utils';
+import { useSetUserInfo } from '../../store/auth/authHooks';
 
 export default function AuthenticatedLayout({ children }) {
-  const { data, isError, isLoading, error, refetch } = useSetUserQuery();
-  const dispatch = useDispatch();
+  const { data, isError, isLoading, refetch } = useSetUserQuery();
+  const setUserInfo = useSetUserInfo();
   useEffect(() => {
     refetch();
   }, []);
   useEffect(() => {
     if (data) {
-      dispatch(setUserInfo(data));
-    }
-    if (error) {
-      dispatch(logout());
+      setUserInfo(data);
     }
   }, [isError, data, isLoading]);
   const router = useRouter();
-  console.log(error);
   useEffect(() => {
     const authLocal = getLocalAuthToken();
     if (!authLocal) router.push('/auth/login');
