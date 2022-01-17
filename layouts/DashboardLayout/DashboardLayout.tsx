@@ -86,7 +86,7 @@ export default function DashboardLayout({ children }) {
                     <Menu.Button className="max-w-xs bg-white rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 lg:p-2 lg:rounded-md lg:hover:bg-gray-50">
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={userSelector?.userInfo?.avatar}
                         alt=""
                       />
                       <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
@@ -165,14 +165,14 @@ export default function DashboardLayout({ children }) {
                     <div className="flex items-center">
                       <img
                         className="hidden h-16 w-16 rounded-full sm:block"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                        src={userSelector?.userInfo?.avatar}
                         alt=""
                       />
                       <div>
                         <div className="flex items-center">
                           <img
                             className="h-16 w-16 rounded-full sm:hidden"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                            src={userSelector?.userInfo?.avatar}
                             alt=""
                           />
                           <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">

@@ -1,11 +1,8 @@
-import { useGetUsersQuery } from '../../services/bima';
 import { useEffect, useState } from 'react';
 import DataGrid from '../DataGrid';
-import {useRouter} from "next/router";
-import {UserType} from "../../types/UserType";
-
-
-
+import { useRouter } from 'next/router';
+import { UserType } from '../../types/UserType';
+import { useGetUsersQuery } from '../../services/users';
 
 const columns = [
   {

@@ -1,191 +1,102 @@
-import { Button } from 'evergreen-ui';
+import { useCreateUserMutation } from '../../services/users';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { toaster } from 'evergreen-ui';
+import * as Yup from 'yup';
+import DashboardLayout from '../../layouts/DashboardLayout';
+import Head from 'next/head';
+import { Formik } from 'formik';
+import UserCreationForm from '../UserCreationForm';
 
-export default function UserCreation({ formik }: any) {
+interface pageProps {
+  initialValues?: {
+    username?: string;
+    password?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    avatar?: string;
+    birthDate?: string;
+  };
+}
+
+export default function UserCreation(props: pageProps) {
+  const [createUser, { data, isError, isLoading }] = useCreateUserMutation();
+  const router = useRouter();
+  useEffect(() => {
+    if (data) {
+      toaster.notify(data.message);
+      router.push('/users');
+    }
+  }, [data, isError, isLoading]);
+
+  const validationForm = Yup.object({
+    username: Yup.string().required('Please enter your username'),
+    password: Yup.string().required('Please enter your password'),
+    email: Yup.string()
+      .email('Must be a valid email')
+      .required('Please enter your email'),
+    firstName: Yup.string().required('Please enter your first name'),
+    lastName: Yup.string().required('Please enter your last name'),
+    passwordConfirmation: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Please enter your password confirmation'),
+    phone: Yup.string().required('Please enter your phone number'),
+    avatar: Yup.string(),
+    birthDate: Yup.date().required('Please enter your birthDate')
+  });
+  const initialValues = {
+    username: props?.initialValues?.username || '',
+    password: props?.initialValues?.password || '',
+    email: props?.initialValues?.email || '',
+    firstName: props?.initialValues?.firstName || '',
+    lastName: props?.initialValues?.lastName || '',
+    passwordConfirmation: props?.initialValues?.password || '',
+    phone: props?.initialValues?.phone || '',
+    avatar: props?.initialValues?.avatar || '',
+    birthDate: props?.initialValues?.birthDate || ''
+  };
+
+  async function create(values: any, { resetForm }: any) {
+    try {
+      await createUser({
+        username: values.username,
+        password: values.password,
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+        avatar: values.avatar,
+        birthDate: values.birthDate
+      });
+    } catch (e) {
+      resetForm();
+      console.log(e);
+    }
+  }
   return (
-    <form
-      className="grid sm:grid-cols-2 grid-cols-1 py-4 gap-y-10 gap-x-16"
-      onSubmit={formik.handleSubmit}
-    >
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            id={'firstName'}
-            name="firstName"
-            placeholder="First Name..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.firstName}
-          />
-          {formik.touched.firstName && formik.errors.firstName ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.firstName}
+    <div className="mt-8">
+      <h2 className="max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
+        Create new user
+      </h2>
+      <div className="sm:block">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col mt-2">
+            <div className="align-middle min-w-full overflow-x-auto overflow-hidden sm:rounded-lg">
+              <Formik
+                initialValues={initialValues}
+                onSubmit={create}
+                validationSchema={validationForm}
+              >
+                {(props) => {
+                  return <UserCreationForm formik={props} />;
+                }}
+              </Formik>
             </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            name="lastName"
-            id="lastName"
-            placeholder="Last Name..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.lastName}
-          />
-          {formik.touched.lastName && formik.errors.lastName ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.lastName}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            id={'email'}
-            name="email"
-            type="email"
-            placeholder="Email...."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-          />
-          {formik.touched.email && formik.errors.email ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.email}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            id={'username'}
-            name="username"
-            placeholder="Username..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.username}
-          />
-          {formik.touched.username && formik.errors.username ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.username}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <div className="block space-y-1">
-            <input
-              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              type="password"
-              name="password"
-              placeholder="Password..."
-              id={'password'}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="invalid-feedback text-xs text-red-500 absolute">
-                {formik.errors.password}
-              </div>
-            ) : null}
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            type="password"
-            id={'passwordConfirmation'}
-            name="passwordConfirmation"
-            placeholder="Repeat Password..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.passwordConfirmation}
-          />
-          {formik.touched.passwordConfirmation &&
-          formik.errors.passwordConfirmation ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.passwordConfirmation}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            type="text"
-            id={'phone'}
-            name="phone"
-            placeholder="Phone Number..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phone}
-          />
-          {formik.touched.phone && formik.errors.phone ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.phone}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            type="text"
-            id={'avatar'}
-            name="avatar"
-            placeholder="Avatar Url"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.avatar}
-          />
-          {formik.touched.avatar && formik.errors.avatar ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.avatar}
-            </div>
-          ) : null}
-        </div>
-      </div>
-      <div className="grid grid-cols-1">
-        <div className="block space-y-1">
-          <input
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            type="date"
-            id={'birthDate'}
-            name="birthDate"
-            placeholder="Repeat Password..."
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.birthDate}
-          />
-          {formik.touched.birthDate && formik.errors.birthDate ? (
-            <div className="invalid-feedback text-xs text-red-500 absolute">
-              {formik.errors.birthDate}
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2">
-        <Button marginRight={16} appearance="primary" type="submit">
-          Create
-        </Button>
-        <Button marginRight={16} appearance="primary" disabled>
-          Clear
-        </Button>
-      </div>
-    </form>
+    </div>
   );
 }

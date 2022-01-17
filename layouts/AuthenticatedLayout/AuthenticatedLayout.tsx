@@ -1,18 +1,25 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSetUserQuery } from '../../services/bima';
 import { getLocalAuthToken } from '../../utils/Utils';
-import { useSetUserInfo } from '../../store/auth/authHooks';
+import { useLogout, useSetUserInfo } from '../../store/auth/authHooks';
+import { get } from 'lodash';
+import { useSetUserQuery } from '../../services/users';
 
 export default function AuthenticatedLayout({ children }) {
-  const { data, isError, isLoading, refetch } = useSetUserQuery();
+  const { data, isError, isLoading, refetch, error } = useSetUserQuery();
   const setUserInfo = useSetUserInfo();
+  const logout = useLogout();
+  console.log('AuthenticatedLayout', error);
   useEffect(() => {
     refetch();
   }, []);
   useEffect(() => {
     if (data) {
       setUserInfo(data);
+    }
+    const status = get(error, 'status');
+    if (status && status === 401) {
+      logout();
     }
   }, [isError, data, isLoading]);
   const router = useRouter();
