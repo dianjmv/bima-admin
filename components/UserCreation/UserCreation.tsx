@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { toaster } from 'evergreen-ui';
 import * as Yup from 'yup';
-import DashboardLayout from '../../layouts/DashboardLayout';
-import Head from 'next/head';
 import { Formik } from 'formik';
 import UserCreationForm from '../UserCreationForm';
+import { useGetRolesQuery } from '../../services/roles';
+import {RolesTypes} from "../../types/RolesTypes";
 
 interface pageProps {
   initialValues?: {
@@ -18,11 +18,13 @@ interface pageProps {
     phone?: string;
     avatar?: string;
     birthDate?: string;
+    role?: Array<RolesTypes>;
   };
 }
 
 export default function UserCreation(props: pageProps) {
   const [createUser, { data, isError, isLoading }] = useCreateUserMutation();
+  const roleService = useGetRolesQuery();
   const router = useRouter();
   useEffect(() => {
     if (data) {
@@ -44,7 +46,8 @@ export default function UserCreation(props: pageProps) {
       .required('Please enter your password confirmation'),
     phone: Yup.string().required('Please enter your phone number'),
     avatar: Yup.string(),
-    birthDate: Yup.date().required('Please enter your birthDate')
+    birthDate: Yup.date().required('Please enter your birthDate'),
+    role : Yup.string().required('Please enter your role')
   });
   const initialValues = {
     username: props?.initialValues?.username || '',
@@ -55,7 +58,8 @@ export default function UserCreation(props: pageProps) {
     passwordConfirmation: props?.initialValues?.password || '',
     phone: props?.initialValues?.phone || '',
     avatar: props?.initialValues?.avatar || '',
-    birthDate: props?.initialValues?.birthDate || ''
+    birthDate: props?.initialValues?.birthDate || '',
+    role: props?.initialValues?.role || roleService.data?.roles || []
   };
 
   async function create(values: any, { resetForm }: any) {
